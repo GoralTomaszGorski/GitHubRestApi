@@ -1,9 +1,10 @@
 package goral.tg_atipera_task.controller;
 
-import goral.tg_atipera_task.model.GitRepDto;
+import goral.tg_atipera_task.model.ModelGitRep;
 import goral.tg_atipera_task.service.GitRepService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -12,23 +13,15 @@ public class GitRepController {
 
     private final GitRepService gitRepService;
 
-    @GetMapping("/gitrepos")
-    public GitRepDto getGitRepos(){
-        return gitRepService.getGitRep();
+    @GetMapping("/gitrepos/{userName}")
+    public ModelGitRep getGitRepos(@PathVariable String userName){
+        return gitRepService.getGitRep(userName);
     }
 
     @GetMapping("/gitbranches")
-    public GitRepDto getGitBranches(){
+    public ModelGitRep getGitBranches(){
         return gitRepService.getGitBranches();
     }
 
-    @GetMapping("/gittest")
-    public GitRepDto getGitBranches2(){
-        return gitRepService.getGitBranchesTest();
-    }
 
-    @GetMapping("/gitReposAndBranches")
-    public GitRepDto gitReposAndBranches(){
-        return gitRepService.getGitReposAndBranches();
-    }
 }

@@ -1,5 +1,7 @@
 package goral.tg_atipera_task.web;
 
+import goral.tg_atipera_task.model.ModelGitRep;
+import goral.tg_atipera_task.web.dto.Root;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,22 +17,30 @@ public class GitRepClient {
     // https://api.github.com/repos/GoralTomaszGorski/psychotherapist_office/branches
 
 
-    public String getGitRepForUserName(String userName) {
-        return restTemplate.getForObject(GIT_FIRSTPART_URL
+
+    public ModelGitRep getGitRepForUserName(String userName) {
+        Root root = callGetMethod(GIT_FIRSTPART_URL
                         + "users/{userName}/repos",
-                String.class,
+                Root.class,
                 userName);
+        return ModelGitRep.builder()
+                .name(root.name)
+                .full_name(root.full_name)
+                .login(root.owner.login)
+                .build();
     }
 
     public String getGitBranchesForUserNameAndRepo(String userName, String repository){
-        return restTemplate.getForObject(GIT_FIRSTPART_URL
-                        + "repos/{userName}/{repository}/branches",
+        return callGetMethod( "repos/{userName}/{repository}/branches",
                 String.class,
                 userName, repository);
     }
 
-    public String getGitBranchesForOwnerAndRepoTest(){
-        return restTemplate.getForObject("https://api.github.com/repos/GoralTomaszGorski/psychotherapist_office/branches",
-                String.class);
+    private <T> T callGetMethod(String url, Class<T> responseType, Object...objects) {
+        return restTemplate.getForObject(GIT_FIRSTPART_URL
+                        + url,
+                responseType,
+                objects);
     }
+
 }
